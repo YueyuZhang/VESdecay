@@ -1,0 +1,53 @@
+﻿/* VESdecay: VesBiasOptimizerBase.h
+ * Learning rate decay for VES optimizers
+ * Reference: Zhang et al. (2026) Materials Genome Engineering Advances
+ */
+
+#ifndef __PLUMED_ves_VesBiasOptimizerBase_h
+#define __PLUMED_ves_VesBiasOptimizerBase_h
+
+#include "core/ActionSetup.h"
+#include "core/ActionWithValue.h"
+#include "tools/Keywords.h"
+#include <string>
+#include <cmath>
+
+namespace PLMD {
+namespace ves {
+
+class VesBiasOptimizerBase :
+  public ActionSetup,
+  public ActionWithValue
+{
+protected:
+  unsigned int iteration_counter;
+  double learning_rate;
+  double initial_learning_rate;
+  bool use_decay;
+  std::string decay_type;
+  double decay_time;
+
+  double getCurrentLearningRate() const;
+
+public:
+  static void registerKeywords(Keywords& keys);
+  explicit VesBiasOptimizerBase(const ActionOptions&);
+  virtual ~VesBiasOptimizerBase() {}
+  void update();
+  virtual void performIteration() = 0;
+};
+
+inline
+double VesBiasOptimizerBase::getCurrentLearningRate() const {
+  if (!use_decay) return initial_learning_rate;
+  double k = static_cast<double>(iteration_counter);
+  double tau_d = decay_time;
+  if (decay_type == "INVERSE") return initial_learning_rate / (1.0 + k / tau_d);
+  if (decay_type == "EXPONENTIAL") return initial_learning_rate * std::exp(-k / tau_d);
+  if (decay_type == "LINEAR") return initial_learning_rate * std::max(0.0, 1.0 - k / tau_d);
+  return initial_learning_rate;
+}
+
+}
+}
+#endif

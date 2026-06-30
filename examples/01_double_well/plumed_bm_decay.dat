@@ -1,0 +1,33 @@
+﻿# VES with Learning Rate Decay: Wolfe-Quapp Double Well
+# Reference: Zhang et al. (2026) Materials Genome Engineering Advances
+
+# Collective variable: x coordinate
+cv: POSITION ATOMS=1 COMPONENTS
+
+# VES bias with linear expansion
+VES ...
+  LABEL=ves
+  ARG=cv.x
+
+  # Chebyshev basis functions
+  BASIS1...
+    CHEBYSHEV MINIMUM=-2.0 MAXIMUM=2.0 ORDER=15
+  ...BASIS1
+
+  # Well-tempered target distribution
+  TARGET DISTRIBUTION=well-tempered BIASFACTOR=10.0
+
+  # BM optimizer WITH learning rate decay
+  OPTIMIZER ...
+    BM
+    LEARNING_RATE=0.05
+    DECAY_TYPE=INVERSE
+    DECAY_TIME=200
+  ...OPTIMIZER
+
+  # Optimization every 500 steps
+  OPTIMIZATION_STRATEGY EVERY_N=500 STEPS
+... VES
+
+# Output
+PRINT ARG=cv.x,ves.bias FILE=COLVAR STRIDE=100

@@ -1,0 +1,35 @@
+﻿# VES with Learning Rate Decay: Sodium Melting
+# Reference: Zhang et al. (2026) Materials Genome Engineering Advances
+
+# Structure factor CV for first bcc peak
+sf: STRUCTURE_FACTOR ...
+  ATOMS=1-250
+  SPECIES=Na
+  QLOW=2.9 QHIGH=3.1 NBINS=10
+... STRUCTURE_FACTOR
+
+# VES bias
+VES ...
+  LABEL=ves
+  ARG=sf.q_peak
+
+  # Basis functions
+  BASIS1...
+    CHEBYSHEV MINIMUM=0.0 MAXIMUM=1.0 ORDER=20
+  ...BASIS1
+
+  # Target distribution
+  TARGET DISTRIBUTION=well-tempered BIASFACTOR=15.0
+
+  # BM optimizer with decay (critical for stability in this system)
+  OPTIMIZER ...
+    BM
+    LEARNING_RATE=0.03
+    DECAY_TYPE=INVERSE
+    DECAY_TIME=400
+  ...OPTIMIZER
+
+  OPTIMIZATION_STRATEGY EVERY_N=1000 STEPS
+... VES
+
+PRINT ARG=sf.q_peak,ves.bias FILE=COLVAR STRIDE=100
