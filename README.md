@@ -1,9 +1,9 @@
-# VESdecay: Variational Enhanced Sampling with Learning Rate Decay
+﻿# VESdecay: Variational Enhanced Sampling with Learning Rate Decay
 
 Implementation of the learning rate decay method for Variational Enhanced Sampling (VES) as described in:
 
 > **Zhang et al. (2026)** "Faster Convergence in Variational Enhanced Sampling Using Decaying Learning Rates"  
-> *Materials Genome Engineering Advances*
+> 
 
 ## Overview
 
@@ -53,8 +53,9 @@ VES ...
 ```bibtex
 @article{zhang2026vesdecay,
   title={Faster Convergence in Variational Enhanced Sampling},
-  author={Zhang, Y. and others},
-  journal={Materials Genome Engineering Advances},
+  author={},
+  journal={},
   year={2026}
 }
 ```
+
