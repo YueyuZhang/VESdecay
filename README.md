@@ -48,14 +48,5 @@ VES ...
 ... VES
 ```
 
-## Citation
 
-```bibtex
-@article{zhang2026vesdecay,
-  title={Faster Convergence in Variational Enhanced Sampling},
-  author={},
-  journal={},
-  year={2026}
-}
-```
 
