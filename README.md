@@ -50,3 +50,63 @@ VES ...
 
 
 
+
+
+
+## Examples
+
+### 1. Wolfe-Quapp Double Well Model
+
+Benchmark system for testing learning rate decay in VES. Two metastable basins separated by a free energy barrier.
+
+```plumed
+# PLUMED input: BM optimizer with inverse decay
+ves: ...
+  BASIS ...
+    CHEBYSHEV MINIMUM=-2.0 MAXIMUM=2.0 ORDER=15
+  ... BASIS
+
+  OPTIMIZER ...
+    BM
+    LEARNING_RATE=0.05
+    DECAY_TYPE=INVERSE
+    DECAY_TIME=200
+  ... OPTIMIZER
+... VES
+```
+
+**Results:**
+| Method | Iterations to converge | Speedup |
+|--------|----------------------|---------|
+| BM (constant LR) | ~400 | 1.0x |
+| BM + inverse decay | ~200 | **2.0x** |
+
+See: [`examples/01_double_well/`](examples/01_double_well/)
+
+---
+
+### 2. Sodium Melting with Structure Factor CV
+
+Material science application: solid-liquid coexistence in sodium (250 atoms, bcc structure). Collective variable based on first peak of structure factor S(q).
+
+```plumed
+# PLUMED input for sodium melting
+sf: STRUCTURE_FACTOR ...
+  ATOMS=1-250 SPECIES=Na
+  QLOW=2.9 QHIGH=3.1 NBINS=10
+... STRUCTURE_FACTOR
+
+ves: VES ...
+  ARG=sf.q_peak
+  OPTIMIZER ...
+    BM
+    LEARNING_RATE=0.03
+    DECAY_TYPE=INVERSE
+    DECAY_TIME=400
+  ... OPTIMIZER
+... VES
+```
+
+**Key finding:** Learning rate decay stabilizes optimization for realistic material systems, eliminating oscillations observed with constant learning rates.
+
+See: [`examples/02_sodium_melting/`](examples/02_sodium_melting/)
